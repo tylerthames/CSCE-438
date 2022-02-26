@@ -1,0 +1,38 @@
+syntax = "proto3";
+package csce438;
+import "google/protobuf/timestamp.proto";
+
+// ------------------------------------------------------------
+// The tiny service definition
+// These are the different functionalities exposed by service
+// ------------------------------------------------------------
+service SNSService{
+  rpc Login (Request) returns (Reply) {}
+  rpc List (Request) returns (Reply) {}
+  rpc Follow (Request) returns (Reply) {}
+  rpc UnFollow (Request) returns (Reply) {}
+  rpc Timeline (stream Message) returns (stream Message) {} 
+}
+
+// The request definition
+message Request {
+  string username = 1;
+  repeated string arguments = 2;
+}
+
+// The response definition
+message Reply {
+  string msg = 1;
+  repeated string all_users = 2;
+  repeated string following_users = 3;
+}
+
+// The timeline message definition
+// Username, who sent the message
+// Message, that was sent
+// Time, when the message was sent
+message Message {
+  string username = 1;
+  string msg = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}
