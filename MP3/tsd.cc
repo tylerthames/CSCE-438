@@ -275,6 +275,7 @@ class SNSServiceImpl final : public SNSService::Service {
     stream->Read(&startup);
     std::string user = startup.username();
     std::string following = dirName + user + "following.txt";
+        
 
     std::thread writer([following, stream]() {
         struct stat file;
@@ -301,7 +302,7 @@ class SNSServiceImpl final : public SNSService::Service {
 
     std::thread reader([stream, slavestream]() {
       Message message;
-      Client *c;
+      Client *c; 
       while(stream->Read(&message)) {
         if(servertype == "MASTER"){
           slavestream->Write(message);
@@ -321,31 +322,33 @@ class SNSServiceImpl final : public SNSService::Service {
           user_file << fileinput;
         }
         else{
-            if(c->stream==0)
+          if(c->stream==0)
       	  c->stream = stream;
-        std::string line;
-        std::vector<std::string> newest_twenty;
-        std::ifstream in(username+"following.txt");
-        int count = 0;
-        //Read the last up-to-20 lines (newest 20 messages) from userfollowing.txt
-        while(getline(in, line)){
-          if(c->following_file_size > 20){
-	    if(count < c->following_file_size-20){
-              count++;
-	      continue;
+          std::string line;
+          std::vector<std::string> newest_twenty;
+          std::ifstream in(username+"following.txt");
+          int count = 0;
+          //Read the last up-to-20 lines (newest 20 messages) from userfollowing.txt
+          while(getline(in, line)){
+            if(c->following_file_size > 20){
+              if(count < c->following_file_size-20){
+                count++;
+                continue;
+              }
             }
+            newest_twenty.push_back(line);
           }
-          newest_twenty.push_back(line);
-        }
-        Message new_msg; 
- 	//Send the newest messages to the client to be displayed
-        for(int i = 0; i<newest_twenty.size(); i++){
-          new_msg.set_msg(newest_twenty[i]);
-                stream->Write(new_msg);
-              }   
+          Message new_msg; 
+          //Send the newest messages to the client to be displayed
+          for(int i = 0; i<newest_twenty.size(); i++){
+            new_msg.set_msg(newest_twenty[i]);
+                  stream->Write(new_msg);
+          }    
+                
+          
         }
       }
-      });
+    });
 
     //Wait for the threads to finish
     writer.join();

@@ -373,7 +373,11 @@ void Client::Timeline(const std::string& username) {
     std::thread writer([username, stream]() {
             std::string input = "Set Stream";
             Message m = MakeMessage(username, input);
+            Message m2 = MakeMessage(username, input);
+            Message m3 = MakeMessage(username, input);
             stream->Write(m);
+            stream->Write(m2);
+            stream->Write(m3);
             while (1) {
             input = getPostMessage();
             m = MakeMessage(username, input);
