@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package snsCoordinator;
+
+import "google/protobuf/timestamp.proto";
+
+service SNSCoordinator{
+    
+    rpc CLogin (CRequest) returns (CReply) {}
+    // Bidirectional Communication to check on server interaction
+    rpc ServerCommunicate (stream HeartBeat) returns (stream HeartBeat) {}
+}
+
+message CRequest{
+    // type of requester
+    string requester = 1;
+    // message with their port number
+    string port_number = 2;
+    // the id of the request
+    int32 id = 3;
+    // the type of server
+    string server_type = 4;
+}
+
+message CReply{
+    string msg = 1;
+}
+
+message HeartBeat{
+    // id of the server
+    int32 sid = 1;
+    // type of the server
+    string s_type = 2;
+    //Time the message was sent
+    google.protobuf.Timestamp timestamp = 3;
+}

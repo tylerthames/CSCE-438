@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package synchronizer;
+
+import "google/protobuf/timestamp.proto";
+
+service Synchronizer{
+
+    rpc UserUpdate (UserMessage) returns (Response) {}
+    // Bidirectional Communication to check on server interaction
+    rpc FollowerUpdate (UserMessage) returns (Response) {}
+    rpc TimelineUpdate (UserMessage) returns (Response) {}
+    
+}
+
+message UserMessage{
+    string username = 1;
+    string filename = 2;
+    string content = 3;
+    string id = 4;
+
+}
+
+message Response{
+    string msg = 1;
+}
